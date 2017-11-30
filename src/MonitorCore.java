@@ -38,13 +38,13 @@ public class MonitorCore {
 		
 			switch (option) {
 				case MAIN_MENU:
-					System.out.println("Goodbye.");
+					System.out.println("Exiting Setup.");
 					break;
 				case ADD_MONITOR:
 					add_monitor(sc);
 					break;
 				case REMOVE_MONITOR:
-					System.out.println("2. Select Monitor to Remove: ");
+					remove_monitor();
 					break;
 				case DISPLAY_AVAILABLE_MONITORS:
 					display_monitors();
@@ -53,7 +53,7 @@ public class MonitorCore {
 					create_alarm(sc);
 					break;
 				case REMOVE_ALARM:
-					System.out.println("5. Remove Alarm");
+					remove_alarm(sc);
 					break;
 				case DISPLAY_CURRENT_ALARMS:
 					display_alarms();
@@ -64,6 +64,21 @@ public class MonitorCore {
 			}	
 		} while (option != MAIN_MENU);
 		sc.close();
+		
+		while (true) {
+			for (MonitorSubject mon : monitors) {
+				MonitorSSH ssh_mon = (MonitorSSH)mon;
+				for (MonitorObserver alarm : ssh_mon.get_obs_alarms()) {
+					alarm.down();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					alarm.up();
+				}
+			}
+		}
 	}
 	
 	/*
@@ -120,6 +135,10 @@ public class MonitorCore {
 		System.out.println("5. Remove an Alarm");
 		System.out.println("6. Display Current Alarms");
 		System.out.println("Enter Choice: ");
+	}
+	
+	private void remove_monitor() {
+		
 	}
 	
 	private void display_monitors() {
@@ -179,5 +198,34 @@ public class MonitorCore {
 				System.out.println(ssh_alarm.email);
 			}
 		}
+	}
+	
+	private void remove_alarm(Scanner sc) {
+		/*
+		 * I seem to have to enter this every time, I switch from
+		 * reading an Int to a Line. Investigation to follow.
+		 * 
+		 */
+		sc.nextLine();
+		/*
+		 * We only have the one monitor in this demonstration, so let's use that.
+		 */
+		
+		/*
+		 * Find a way of uniquely identifying a specific observer, we'll use email
+		 * address for now.
+		 */
+		
+		System.out.print("Enter email address for alarm to remove: ");
+		String email = sc.nextLine();
+		
+		/*
+		 * Get the only monitor in our demo
+		 */
+		MonitorSubject monitor = monitors.get(0);
+		MonitorSSH ssh_monitor = (MonitorSSH)monitor;
+		
+		monitor.unregister_observer(ssh_monitor.get_alarm(email));
+		
 	}
 }

@@ -59,8 +59,12 @@ public class SSHAlarmObserver implements MonitorObserver {
 	
 	public void down() {
 		System.out.println("SSH is Down!");
+		System.out.println("Emailing: " + this.get_email());
+		System.out.println("Sending SMS to: " + this.get_sms());
 	}
 	public void up() {
 		System.out.println("SSH is Up!");
+		System.out.println("Emailing: " + this.get_email());
+		System.out.println("Sending SMS to: " + this.get_sms());
 	}
 }
