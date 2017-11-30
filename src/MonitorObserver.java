@@ -12,6 +12,6 @@
  * 		e.g: A MonitorObserver can be removed, added
  */
 public interface MonitorObserver {
-	public void down();
-	public void up();
+	public void down();				/* when a monitor indicates loss of service */
+	public void up();				/* when a monitor indicates service restored */
 }

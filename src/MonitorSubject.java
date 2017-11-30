@@ -11,4 +11,5 @@
 public interface MonitorSubject {
 	public void register_observer(MonitorObserver notify);
 	public void unregister_observer(MonitorObserver notify);
+	public void notify_observers();
 }
